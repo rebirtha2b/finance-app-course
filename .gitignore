@@ -1,15 +1,61 @@
-.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
-
-# Your financial data never belongs in version control.
-# The -wal/-shm/-journal siblings are SQLite's own artifacts and sit right
-# next to the database, so the glob covers every suffix rather than listing
-# them — missing one is how a database file ends up committed by accident.
+# ---------------------------------------------------------------- your data
+# The database holds every transaction, balance and holding you enter. It must
+# never reach version control — especially not a hosted remote.
+# The -wal/-shm/-journal siblings are SQLite's own artifacts and sit right next
+# to it, so the glob covers every suffix rather than listing them: missing one
+# is exactly how a database file gets committed by accident.
 data/*.db
 data/*.db-*
 
+# CSV exports carry the same data in plain text. The app names downloads
+# transactions-YYYY-MM-DD.csv; this also catches bank statements dropped into
+# the project folder to be imported.
+*.csv
+!backend/tests/**/*.csv
+
+# ------------------------------------------------------------------- secrets
+# app/config.py reads .env at the repo root. Variants are covered because a
+# stray .env.local is just as sensitive as .env.
+.env
+.env.*
+!.env.example
+
+# -------------------------------------------------------------------- python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# ---------------------------------------------------------------- javascript
 node_modules/
 frontend/dist/
-.env
+*.local
+
+# ------------------------------------------------------------------- tooling
+# Claude Code's per-machine settings: local paths and granted permissions.
+.claude/settings.local.json
+
+# ------------------------------------------------------- editors & OS cruft
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.sw?
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----------------------------------------------------------- logs & backups
+*.log
+npm-debug.log*
+*.bak
+*.orig
+*.tmp
