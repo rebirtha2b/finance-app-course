@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+    <title>Finance</title>
+    <script>
+      // Runs before first paint. Without this the page renders light and then
+      // snaps to dark once React mounts — a visible white flash every load.
+      // Kept inline and dependency-free for exactly that reason.
+      (function () {
+        try {
+          var choice = localStorage.getItem('finance-theme')
+          if (choice === 'dark' || choice === 'light') {
+            document.documentElement.setAttribute('data-theme', choice)
+          }
+        } catch (e) {
+          /* private mode: fall back to the OS preference */
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

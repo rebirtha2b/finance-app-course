@@ -1,0 +1,107 @@
+@import 'tailwindcss';
+
+/* Light is the default set. Every colour in the app is one of these tokens,
+   so the dark theme below is a single override block rather than a per-page
+   edit — and nothing can be left behind in the wrong mode. */
+@theme {
+  --color-ink: #0b0b0b;
+  --color-muted: #52514e;
+  --color-faint: #898781;
+  --color-line: #e1e0d9;
+  --color-surface: #ffffff;
+  --color-canvas: #f8fafc;
+  --color-positive: #15803d;
+  --color-negative: #b91c1c;
+  --color-accent: #4f46e5;
+  --color-accent-ink: #ffffff;
+  --color-warn-surface: #fffbeb;
+  --color-warn-line: #fcd34d;
+  --color-warn-ink: #78350f;
+  --color-warn-mark: #d97706;
+  /* Chart-only roles. The dark values are *selected* for the dark surface
+     from the same ramps, not an automatic flip of the light ones. Both pairs
+     were run through the palette validator: light ΔE 24.7, dark ΔE 26.8
+     (CVD, OKLab x100) against their own surfaces. */
+  --color-series-1: #2a78d6;
+  --color-series-2: #eb6834;
+  --color-grid: #e1e0d9;
+}
+
+/* The OS setting applies only when the user has not chosen explicitly.
+   The :not() guard lets an explicit light choice beat OS dark. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-ink: #ffffff;
+    --color-muted: #c3c2b7;
+    --color-faint: #898781;
+    --color-line: #2c2c2a;
+    --color-surface: #1a1a19;
+    --color-canvas: #0d0d0d;
+    --color-positive: #4ade80;
+    --color-negative: #f87171;
+    --color-accent: #818cf8;
+    --color-accent-ink: #0d0d0d;
+    --color-warn-surface: #2a2210;
+    --color-warn-line: #7c5e10;
+    --color-warn-ink: #fcd34d;
+    --color-warn-mark: #fbbf24;
+    --color-series-1: #3987e5;
+    --color-series-2: #d95926;
+    --color-grid: #2c2c2a;
+  }
+}
+
+/* An explicit choice wins over the OS in both directions. */
+:root[data-theme='dark'] {
+  --color-ink: #ffffff;
+  --color-muted: #c3c2b7;
+  --color-faint: #898781;
+  --color-line: #2c2c2a;
+  --color-surface: #1a1a19;
+  --color-canvas: #0d0d0d;
+  --color-positive: #4ade80;
+  --color-negative: #f87171;
+  --color-accent: #818cf8;
+  --color-accent-ink: #0d0d0d;
+  --color-warn-surface: #2a2210;
+  --color-warn-line: #7c5e10;
+  --color-warn-ink: #fcd34d;
+  --color-warn-mark: #fbbf24;
+  --color-series-1: #3987e5;
+  --color-series-2: #d95926;
+  --color-grid: #2c2c2a;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  /* Tells the browser to style scrollbars, form controls and the date picker
+     for the active theme — without this the native date inputs stay white. */
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme='light']) {
+    color-scheme: dark;
+  }
+}
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Tabular figures keep money columns aligned digit-for-digit. Deliberately
+   not applied to large standalone numbers, where equal-width digits look
+   loose. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}

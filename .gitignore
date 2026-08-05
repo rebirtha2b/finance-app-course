@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Your financial data never belongs in version control.
+# The -wal/-shm/-journal siblings are SQLite's own artifacts and sit right
+# next to the database, so the glob covers every suffix rather than listing
+# them — missing one is how a database file ends up committed by accident.
+data/*.db
+data/*.db-*
+
+node_modules/
+frontend/dist/
+.env
