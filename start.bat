@@ -33,6 +33,33 @@ if not exist "..\frontend\dist\index.html" (
     exit /b 1
 )
 
+REM Rebuild the interface when its source is newer than the last build.
+REM Without this, editing frontend code leaves the server serving the previous
+REM bundle and the change appears not to have happened at all.
+REM
+REM The comparison is done in PowerShell because batch has no way to compare
+REM the newest file in a tree against a single file.
+REM Signalled by exit code rather than captured output: inside a for /f the
+REM pipes in the PowerShell pipeline need escaping, and that escaping silently
+REM broke the comparison so it never rebuilt.
+powershell -NoProfile -Command "$src = Get-ChildItem '%~dp0frontend\src' -Recurse -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $dist = Get-Item '%~dp0frontend\dist\index.html' -ErrorAction SilentlyContinue; if ($src -and $dist -and $src.LastWriteTime -gt $dist.LastWriteTime) { exit 1 } else { exit 0 }"
+
+if errorlevel 1 (
+    echo.
+    echo   Frontend changed since the last build - rebuilding...
+    pushd "%~dp0frontend"
+    call npm run build
+    if errorlevel 1 (
+        REM A broken build must not block the app: the previous bundle still
+        REM works, so warn and carry on rather than refusing to start.
+        echo.
+        echo   The rebuild failed. Starting with the previous version instead.
+        echo   The error is above.
+        echo.
+    )
+    popd
+)
+
 echo.
 echo   Starting the finance app...
 echo   Your browser will open at http://127.0.0.1:8000
