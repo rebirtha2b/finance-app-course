@@ -115,11 +115,24 @@ class SPAStaticFiles(StaticFiles):
         if scope.get("path", "").startswith("/api/"):
             raise StarletteHTTPException(status_code=404, detail="Not Found")
         try:
-            return await super().get_response(path, scope)
+            response = await super().get_response(path, scope)
         except StarletteHTTPException as exc:
-            if exc.status_code == 404:
-                return await super().get_response("index.html", scope)
-            raise
+            if exc.status_code != 404:
+                raise
+            response = await super().get_response("index.html", scope)
+            path = "index.html"
+
+        # Asset filenames carry a content hash, so they can be cached hard.
+        # index.html cannot — its name never changes while its contents point
+        # at the latest hashed bundle. Without this the browser reuses a stale
+        # index.html after a rebuild and the app silently runs old code, which
+        # looks like "the new feature isn't there".
+        if path in ("index.html", ".", "") or path.endswith("index.html"):
+            response.headers["Cache-Control"] = "no-cache, must-revalidate"
+        elif "/assets/" in scope.get("path", ""):
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+
+        return response
 
 
 def _mount_frontend(path: Path) -> None:
