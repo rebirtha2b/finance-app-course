@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/client'
 import { parseAmountInput, today } from '../api/money'
-import type { Account, CategoryTreeNode } from '../api/types'
+import type { Account, CategoryTreeNode, Transaction } from '../api/types'
 import CategorySelect from './CategorySelect'
 
 interface Props {
   accounts: Account[]
   expenseTree: CategoryTreeNode[]
   incomeTree: CategoryTreeNode[]
-  onAdded: () => void
+  // Receives the saved transaction so the page can react to its date — a
+  // back-dated entry may fall outside the list's current filter.
+  onAdded: (created: Transaction) => void
 }
 
 type Direction = 'expense' | 'income'
@@ -72,7 +74,7 @@ export default function QuickAdd({ accounts, expenseTree, incomeTree, onAdded }:
 
     setSaving(true)
     try {
-      await api.transactions.create({
+      const created = await api.transactions.create({
         date,
         amount: signed,
         account_id: accountId,
@@ -82,7 +84,7 @@ export default function QuickAdd({ accounts, expenseTree, incomeTree, onAdded }:
       setAmount('')
       setDescription('')
       amountRef.current?.focus()
-      onAdded()
+      onAdded(created)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not save')
     } finally {

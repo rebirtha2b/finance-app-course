@@ -4,6 +4,7 @@ import { formatDate, formatMoney, startOfMonth, today } from '../api/money'
 import type {
   Account,
   CategoryTreeNode,
+  Transaction,
   TransactionFilters,
   TransactionPage,
 } from '../api/types'
@@ -28,6 +29,7 @@ export default function TransactionsPage() {
   const [page, setPage] = useState<TransactionPage | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
 
   useEffect(() => {
     Promise.all([
@@ -59,6 +61,36 @@ export default function TransactionsPage() {
     setFilters((f) => ({ ...f, ...patch, offset: 0 }))
   }
 
+  /**
+   * Called after a transaction is saved.
+   *
+   * The list defaults to the current month, so a back-dated entry saves fine
+   * but lands outside the visible range — which reads as "adding it didn't
+   * work". Widen the range to include whatever was just added, and say so,
+   * rather than leaving the user to work out why the row is missing.
+   */
+  function handleAdded(created: Transaction) {
+    const outsideRange =
+      (filters.from && created.date < filters.from) ||
+      (filters.to && created.date > filters.to)
+
+    if (outsideRange) {
+      setNotice(
+        `Added ${formatMoney(created.amount)} on ${formatDate(created.date)}. That date is outside the range you were viewing, so the range was widened to show it.`,
+      )
+      setFilters((f) => ({
+        ...f,
+        from: f.from && created.date < f.from ? created.date : f.from,
+        to: f.to && created.date > f.to ? created.date : f.to,
+        offset: 0,
+      }))
+      return // the filter change triggers the reload
+    }
+
+    setNotice(null)
+    load()
+  }
+
   function toggleSort(field: 'date' | 'amount' | 'description') {
     setFilters((f) => ({
       ...f,
@@ -87,8 +119,24 @@ export default function TransactionsPage() {
         accounts={accounts}
         expenseTree={expenseTree}
         incomeTree={incomeTree}
-        onAdded={load}
+        onAdded={handleAdded}
       />
+
+      {notice && (
+        <div
+          role="status"
+          className="flex items-start justify-between gap-4 rounded-lg border border-line bg-surface px-4 py-3 text-sm"
+        >
+          <span>{notice}</span>
+          <button
+            onClick={() => setNotice(null)}
+            aria-label="Dismiss"
+            className="text-muted hover:text-ink"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {page && (
         <div className="grid grid-cols-3 gap-4">
