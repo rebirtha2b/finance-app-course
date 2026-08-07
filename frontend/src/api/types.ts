@@ -70,6 +70,30 @@ export interface TransactionFilters {
   offset?: number
 }
 
+export interface DataSummary {
+  transactions: number
+  recurring_rules: number
+  budgets: number
+  holdings: number
+  securities: number
+  price_snapshots: number
+  categories: number
+  accounts: number
+}
+
+export type ResetScope =
+  | 'transactions'
+  | 'recurring'
+  | 'budgets'
+  | 'portfolio'
+  | 'categories'
+
+export interface ResetResult {
+  deleted: Record<string, number>
+  scopes: string[]
+  categories_restored: number
+}
+
 export interface CategoryComparison {
   category_id: number
   name: string

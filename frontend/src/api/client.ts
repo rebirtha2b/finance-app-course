@@ -7,7 +7,10 @@ import type {
   CategoryComparison,
   CategoryTreeNode,
   Dashboard,
+  DataSummary,
   ImportResult,
+  ResetResult,
+  ResetScope,
   YearSummary,
   HoldingInput,
   HoldingValue,
@@ -82,6 +85,15 @@ export const api = {
   health: () => request<{ status: string; counts: Record<string, number> }>('/api/health'),
 
   dashboard: () => request<Dashboard>('/api/dashboard'),
+
+  settings: {
+    dataSummary: () => request<DataSummary>('/api/settings/data-summary'),
+    reset: (scopes: ResetScope[], confirm: string) =>
+      request<ResetResult>('/api/settings/reset', {
+        method: 'POST',
+        body: JSON.stringify({ scopes, confirm }),
+      }),
+  },
 
   accounts: {
     list: () => request<Account[]>('/api/accounts'),

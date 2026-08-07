@@ -4,6 +4,7 @@ import BudgetsPage from './pages/BudgetsPage'
 import DashboardPage from './pages/DashboardPage'
 import PortfolioPage from './pages/PortfolioPage'
 import ReportsPage from './pages/ReportsPage'
+import SettingsPage from './pages/SettingsPage'
 import ThemeToggle from './components/ThemeToggle'
 import { useTheme } from './theme'
 import SubscriptionsPage from './pages/SubscriptionsPage'
@@ -16,6 +17,7 @@ const NAV = [
   { to: '/budgets', label: 'Budgets' },
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/reports', label: 'Reports' },
+  { to: '/settings', label: 'Settings' },
 ]
 
 /** Single-key navigation, in the spirit of a keyboard-first tool. */
@@ -26,6 +28,7 @@ const SHORTCUTS: Record<string, string> = {
   b: '/budgets',
   p: '/portfolio',
   r: '/reports',
+  g: '/settings',
 }
 
 export default function App() {
@@ -93,6 +96,7 @@ export default function App() {
           <Route path="/budgets" element={<BudgetsPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
     </div>

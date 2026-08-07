@@ -23,6 +23,7 @@ from app.api import (
     portfolio,
     recurring,
     reports,
+    settings as settings_api,
     transactions,
 )
 from app.config import settings
@@ -91,6 +92,7 @@ app.include_router(budgets.router)
 app.include_router(portfolio.router)
 app.include_router(dashboard.router)
 app.include_router(reports.router)
+app.include_router(settings_api.router)
 
 
 class SPAStaticFiles(StaticFiles):

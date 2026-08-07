@@ -147,7 +147,22 @@ both places.
 ## Keyboard shortcuts
 
 `d` dashboard · `t` transactions · `s` subscriptions · `b` budgets ·
-`p` portfolio · `r` reports. Ignored while typing in a field.
+`p` portfolio · `r` reports · `g` settings. Ignored while typing in a field.
+
+## Resetting data
+
+Settings shows everything currently stored and lets you delete it by
+category — transactions, recurring rules, budgets, portfolio, or categories
+and accounts. **There is no undo.** Export your transactions first; the button
+for it is on the same page.
+
+Two independent gates guard it: you must tick at least one category *and*
+type `DELETE MY DATA` exactly. Neither alone does anything, so a stray click
+or a mistyped API call deletes nothing.
+
+Clearing categories also clears transactions, rules and budgets, since each
+of those points at a category — the default categories and account are
+recreated afterwards so the app stays usable.
 
 ## Database migrations
 
