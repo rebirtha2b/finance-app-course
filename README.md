@@ -35,7 +35,11 @@ npm run build
 
 ## Running
 
-**Normal use** — one process serves both API and UI:
+**Easiest — double-click `start.bat`** (Windows). It launches the server and
+opens your browser. Leave the window open while you use the app; press
+`Ctrl+C` in it to stop.
+
+**Or by hand** — one process serves both API and UI:
 
 ```bash
 cd backend
